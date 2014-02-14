@@ -1,0 +1,134 @@
+cs50
+====
+
+
+void init(void)
+{
+    for (int i = 0; i < d; i++)
+    {
+        for (int j = 0; j < d; j++)
+        {  
+            board[i][j] = (d * d - 1) - ((d * i) + j);  // assign the 'board' value to the point in the array  
+            
+            if ((board[i][j] == 1) && ((d * d) % 2 != 0))  // if odd number of tiles, swap 2 and 1
+            {
+                int swap = board[i][j];
+                board[i][j] = board[i][j - 1];
+                board[i][j - 1] = swap;
+            }            
+        }  
+    }
+    
+    return;  
+}
+
+
+void draw(void)
+{
+    for (int i = 0; i < d; i++) 
+    {
+        for (int j = 0; j < d; j++) 
+        {    
+            if (board[i][j] > 0)  
+            {
+                printf("%2d ", board[i][j]);  // print the 'board' value of the point in the array
+            }
+            else if (board[i][j] == 0)  // if 'board' value is 0, convert to an underscore
+            {
+                blank = board[i][j];
+                printf("__ ");
+            }
+        }
+        printf("\n");  
+    }
+    
+    return;
+}
+
+
+bool move(int tile)
+{
+    for (int i = 0; i < d; i++)
+    {
+        for (int j = 0; j < d; j++)
+        {  
+            if (board[i][j] == tile)  // search for the position of the 'tile'
+            {
+                if (blank == board[i - 1][j])  // verify its a legal move by ensuring that 'i' or 'j' is within 1, but only one can change
+                {
+                    int swap = board[i][j];  // swap 'tile' and 'blank'
+                    board[i][j] = board[i - 1][j];
+                    board[i - 1][j] = swap;
+                
+                    blank = board[i][j];
+                    return true; 
+                }
+                else if (blank == board[i + 1][j])
+                {
+                    int swap = board[i][j];  // swap 'tile' and 'blank'
+                    board[i][j] = board[i + 1][j];
+                    board[i + 1][j] = swap;
+                
+                    blank = board[i][j];
+                    return true;
+                }
+                else if (blank == board[i][j - 1]) 
+                {
+                    int swap = board[i][j];  // swap 'tile' and 'blank'
+                    board[i][j] = board[i][j - 1];
+                    board[i][j - 1] = swap;
+                
+                    blank = board[i][j];
+                    return true;
+                }
+                else if (blank == board[i][j + 1])
+                {
+                    int swap = board[i][j];  // swap 'tile' and 'blank'
+                    board[i][j] = board[i][j + 1];
+                    board[i][j + 1] = swap;
+                
+                    blank = board[i][j];
+                    return true;
+                }
+                else
+                {
+                    return false;
+                } 
+            }            
+        }  
+    }
+      
+    return false;
+}
+
+
+bool won(void)
+{
+    if (board[0][0] == 1 && board[d][d] == 0)  // check if [0,0] = 1 and [d,d] = 0
+    {
+        int current, i, j;
+        int prev = board[0][0];
+        prev = prev - 1;
+        
+        do
+        {
+            for (i = 0; i < d; i++)  // for loops to iterate through the board
+            {
+                for (j = 0; j < d; j++)
+                {
+                    current = board[i][j];
+                
+                    if (current == prev + 1)  // verify that each iteration is 1 greater than the previous iteration
+                    {
+                        prev++;
+                    }
+                }
+            }    
+        }
+        while (board[i][j] < d * d);
+        
+        return true;
+    }
+    
+    return false;
+}
